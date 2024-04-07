@@ -23,8 +23,6 @@ def login (nome_login, password_login):
 
 
 
-
-
 utenti = ["admin"] #inizializzo delle variabili qui
 password = ["admin"]
 pwd_amministratore = "pippo"
@@ -88,8 +86,11 @@ while True:
                     else:
                         sto_comprando = input("Scrivi il nome dell'articolo che vorresti comprare. Se vuoi tornare al menù, digita 'esci', se vuoi andare al carrello"
                                               " digita 'carrello'\n")
-                        if sto_comprando != "esci" and sto_comprando != "carrello":
+                        if sto_comprando != "esci" and sto_comprando != "carrello" and sto_comprando in articoli:
                             compro = articoli.index(sto_comprando)
+                        elif sto_comprando not in articoli and (sto_comprando != "esci" and sto_comprando != "carrello"):
+                            print("Articolo non valido. Ritornerai alla pagina iniziale\n")
+                            continue
 
                         if sto_comprando == "esci": #torno alla prossima iterazione del ciclo
                             continue
@@ -104,28 +105,81 @@ while True:
                                 numero_articoli = list(map(operator.sub, numero_articoli, quantità_comprata)) #sottraggo la quantità comprata alla quantità presente
                                 acquisti = ""
                             else:
+                                for i in range(len(quantità_comprata)):
+                                    quantità_comprata[i] = 0 #resetto la lista perché ho annullato il carrello
                                 continue
                         else:
                             print("Quanti", articoli[compro], "desideri? Al momento ne sono presenti in negozio", numero_articoli[compro])
                             quantità = int(input())
-                            if quantità < numero_articoli[compro]:
-                                quantità_comprata[compro] += quantità
+                            if quantità < numero_articoli[compro]: #mi assicuro di avere gli oggetti nell'inventario
+                                quantità_comprata[compro] += quantità #aggiungo alla lista quantità comprata, che mi servirà per rimuovere dal carrello
                                 totale += quantità*prezzo_articoli[compro]
                                 acquisti += " " +str(quantità) +" " + articoli[compro]
+                                print("\nArticoli aggiunti al carrello! Torna nel carrello per confermare l'acquisto\n")
                             else:
                                 print("Non ci sono abbastanza", articoli[compro], "\n")
                                 continue
 
                 else: #la parte dell'admin
+                    guadagno = 0
                     cosa_fare = int(input("Benvenuto admin. Cosa vuoi fare? 1 per aggiungere un articolo, 2 per modificare gli articoli presenti,"
-                                          " 3 per vedere i guadagni del sito, 4 per visualizzare l'inventario, 0 per uscire"))
+                                          " 3 per vedere i guadagni del sito, 4 per visualizzare l'inventario, 0 per uscire\n"))
                     if cosa_fare == 0:
                         break
-                    if cosa_fare == 4:
+                    elif cosa_fare == 4:
                         for i in range(len(articoli)):
                             print("Ci sono", numero_articoli[i], articoli[i], " ", prezzo_articoli[i], "euro ognuno\n")
                         continue
+                    elif cosa_fare == 3:
+                        for i in range(len(totale_utente)):
+                            print( "L'utente", compratore[i], "ha speso", totale_utente[i]) #stampo l'utente che ha comprato e quanto ha speso
+                            guadagno += totale_utente[i] #controllo il guadagno totale sommando ogni transazione
+                        print("In totale, in negozio abbiamo guadagnato", guadagno, "euro.\n")
+                    elif cosa_fare == 1:
+                        nuovo_articolo = input("Inserire il nuovo articolo da aggiungere all'inventario. Digitare 'esci' per annullare\n")
+                        if nuovo_articolo == "esci":
+                            continue
+                        nuovo_articolo_quantità = int(input("Quanti articoli inserire nell'inventario? "))
+                        nuovo_articolo_prezzo = int(input("Qual è il prezzo del nuovo articolo? "))
 
+                        articoli.append(nuovo_articolo) #ora aggiungo il nuovo articolo alla mia lista
+                        prezzo_articoli.append(nuovo_articolo_prezzo)
+                        numero_articoli.append(nuovo_articolo_quantità)
+                        quantità_comprata.append(0) #non scordo di aggiungere 0 alla quantità comprata di articoli
+                    elif cosa_fare == 2:
+                        decisione = int(input("Premi 1 per rimuovere un oggetto, 2 per modificare la quantità di un oggetto, 3 per modificare il prezzo di un oggetto, 0 per tornare al menù\n"))
+                        if decisione == 1: #rimuovo un oggetto
+                            oggetto_da_rimuovere = input("Scrivi il nome dell'oggetto da rimuovere: ")
+                            if oggetto_da_rimuovere not in articoli: #se non c'è tra gli articoli, torno al menù
+                                print("Articolo non trovato. Tornerai al menù\n")
+                                continue
+                            indice_oggetto_da_rimuovere = articoli.index(oggetto_da_rimuovere) #trovo l'indice dell'oggetto da rimuovere
+                            articoli.remove(oggetto_da_rimuovere) #tolgo l'oggetto
+                            prezzo_articoli.remove(prezzo_articoli[indice_oggetto_da_rimuovere])
+                            quantità_comprata.remove(quantità_comprata[indice_oggetto_da_rimuovere])
+                            numero_articoli.remove(numero_articoli[indice_oggetto_da_rimuovere])
+                        elif decisione == 0:
+                            continue
+                        elif decisione == 2:
+                            oggetto_da_modificare = input("Scrivi il nome dell'oggetto da modificare: ")
+                            if oggetto_da_modificare not in articoli: #se non c'è tra gli articoli, torno al menù
+                                print("Articolo non trovato. Tornerai al menù\n")
+                                continue
+                            nuova_quantità = int(input("Scegli la nuova quantità: "))
+                            indice_quantità_da_modificare = articoli.index(oggetto_da_modificare)
+                            numero_articoli[indice_quantità_da_modificare] = nuova_quantità
+                        elif decisione == 3:
+                            oggetto_da_modificare = input("Scrivi il nome dell'oggetto da modificare: ")
+                            if oggetto_da_modificare not in articoli: #se non c'è tra gli articoli, torno al menù
+                                print("Articolo non trovato. Tornerai al menù\n")
+                                continue
+                            nuovo_prezzo = int(input("Scegli il nuovo prezzo: "))
+                            indice_quantità_da_modificare = articoli.index(oggetto_da_modificare)
+                            prezzo_articoli[indice_quantità_da_modificare] = nuovo_prezzo
+                        else:
+                            continue
+
+#da implementare: funzioni generiche per comandi specifici
 
 
 
