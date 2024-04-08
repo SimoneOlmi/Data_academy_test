@@ -127,7 +127,7 @@ while True:
 
 menù_americano = ristorante_americano.copia_menù()
 for chiave,valori in menù_americano.items():
-    quantità_piatti_americano[chiave] = 2 #aggiungo 10 quantità per ogni piatto
+    quantità_piatti_americano[chiave] = 2 #aggiungo 2 quantità per ogni piatto
 
 #il cliente è qua e ora decide cosa pappare
 while True:
@@ -140,26 +140,35 @@ while True:
         #se sceglie il ristorante americano
         if seleziono_ristorante.lower() == 'americano':
             flag_americano = False
-            for chiave,valore in menù_americano.items():
-                if menù_americano[chiave] !=0: #se tutti sono nulli, il ristorante chiude
+            for chiave,valore in quantità_piatti_americano.items():
+                if quantità_piatti_americano[chiave] !=0: #se tutti sono nulli, il ristorante chiude
                     flag_americano = True #se almeno uno è diverso da zero, il ristorante rimane aperto
             if flag_americano == False:
                 ristorante_americano.chiusura_ristorante() #chiudo il ristorante e torno indietro
                 ristorante_americano.stato_apertura()
+                totale_ristoranti[0] += totale
+                totale = 0
                 break
             ristorante_americano.descrizione_ristorante()
             ristorante_americano.stato_apertura()
             ristorante_americano.stampa_menù()
-            scelgo = input("Inserire il nome del piatto desiderato. Se non si vuole ordinare niente, scrivere 'indietro'") #scelgo il nome del piatto
+            scelgo = input("Inserire il nome del piatto desiderato. Se non si vuole ordinare niente, scrivere 'indietro'\n") #scelgo il nome del piatto
             quantità = int(input("Quanti ne vuoi? ")) #seleziono la quantità
             if scelgo.lower() == 'indietro': #torno alla selezione dei ristoranti
                 break
             else:
-                if quantità < quantità_piatti_americano.get(scelgo): #se la quantità è minore della quantità presente
+                if quantità <= int(quantità_piatti_americano[scelgo]): #se la quantità è minore della quantità presente
                     prezzo_piatto = menù_americano.get(scelgo)
                     totale += prezzo_piatto
+                    quantità_piatti_americano[scelgo] -= quantità #sottraggo la quantità
                 else:
-                    print("Non ci sono abbastanza porzioni. Provare con un nuovo ordine\n")
+                    print("Non ci sono abbastanza porzioni. Provare con un nuovo ordine\n") #se le porzioni sono finite o ce ne sono di meno dell'ordine, dà errore
+                    continue
+                altro = input("Vuoi ordinare altro?\n")
+                if altro.lower() == "no":
+                    totale_ristoranti[0] += totale
+                    totale = 0
+                else:
                     continue
             
                 
