@@ -1,13 +1,11 @@
-"""
-Creo una classe Ristorante. In questa classe ci metto un metodo __init__ con parametri: self, nome e tipo di cucina. ci metto
-un booleano descrizione=False che mi flagga se la descrizione del ristorante è attiva o no. Ci metto poi un attributo di classe inizializzato 
-False per flaggare il ristorante come chiuso. Creo poi un dizionario vuoto {} in cui andrò poi a mettere prezzo e piatto.
-Creo un metodo apertura ristorante che mi cambia il flag del ristorante in True, un metodo chiusura che me lo setta a False, un metodo setta_descrizione
-che mi setta la descrizione True, un metodo Togli_descrizione che mi mette la descrizione false. Poi metto un metodo stato_apertura che mi dice che il ristorante è
-aperto se il parametro è True, il contrario se False. Aggiungi al menù sarà un metodo che prende come parametro il nome ed il prezzo del piatto e me lo inserisce nel dizionario
-definito prima. La stessa cosa con il metodo togli dal menù, ma andrò a toglierlo. Infine, stampa menù stamperà tutte le chiavi del nome del piatto col rispettivo valore di prezzo. 
 
-"""
+# Creo una classe Ristorante. In questa classe ci metto un metodo __init__ con parametri: self, nome e tipo di cucina. ci metto
+# un booleano descrizione=False che mi flagga se la descrizione del ristorante è attiva o no. Ci metto poi un attributo di classe inizializzato 
+# False per flaggare il ristorante come chiuso. Creo poi un dizionario vuoto {} in cui andrò poi a mettere prezzo e piatto.
+# Creo un metodo apertura ristorante che mi cambia il flag del ristorante in True, un metodo chiusura che me lo setta a False, un metodo setta_descrizione
+# che mi setta la descrizione True, un metodo Togli_descrizione che mi mette la descrizione false. Poi metto un metodo stato_apertura che mi dice che il ristorante è
+# aperto se il parametro è True, il contrario se False. Aggiungi al menù sarà un metodo che prende come parametro il nome ed il prezzo del piatto e me lo inserisce nel dizionario
+# definito prima. La stessa cosa con il metodo togli dal menù, ma andrò a toglierlo. Infine, stampa menù stamperà tutte le chiavi del nome del piatto col rispettivo valore di prezzo. 
 
 class Ristorante:
 
@@ -87,6 +85,8 @@ ristorante_vegetariano.apertura_ristorante()
 ristorante_italiano.apertura_ristorante()
 ristorante_americano.apertura_ristorante()
 
+ristorante_italiano.metti_descrizione()
+
 quantità_piatti_vegetariano = {}
 quantità_piatti_italiano = {}
 quantità_piatti_americano = {}
@@ -151,12 +151,15 @@ while True:
                 break
             ristorante_americano.descrizione_ristorante()
             ristorante_americano.stato_apertura()
+            print("Ecco a voi il menù con i piatti ed i prezzi")
             ristorante_americano.stampa_menù()
+            print("\nVi elenchiamo ora le quantità rimaste per ogni piatto")
+            print(quantità_piatti_americano)
             scelgo = input("Inserire il nome del piatto desiderato. Se non si vuole ordinare niente, scrivere 'indietro'\n") #scelgo il nome del piatto
-            quantità = int(input("Quanti ne vuoi? ")) #seleziono la quantità
             if scelgo.lower() == 'indietro': #torno alla selezione dei ristoranti
                 break
             else:
+                quantità = int(input("Quanti ne vuoi? ")) #seleziono la quantità
                 if quantità <= int(quantità_piatti_americano[scelgo]): #se la quantità è minore della quantità presente
                     prezzo_piatto = menù_americano.get(scelgo)
                     totale += prezzo_piatto
@@ -166,14 +169,90 @@ while True:
                     continue
                 altro = input("Vuoi ordinare altro?\n")
                 if altro.lower() == "no":
+                    print("Grazie del tuo ordine. Hai speso", totale, "euro. Ti riporteremo alla scelta dei ristoranti")
                     totale_ristoranti[0] += totale
                     totale = 0
+                    break
                 else:
                     continue
             
                 
-        # elif seleziono_ristorante.lower() == 'vegetariano':
-        #     ristorante_vegetariano.descrizione_ristorante()
-        #     ristorante_vegetariano.stato_apertura()
-        #     ristorante_vegetariano.stampa_menù()
+        elif seleziono_ristorante.lower() == 'vegetariano':
+            flag_vegetariano = False
+            for chiave,valore in quantità_piatti_vegetariano.items():
+                if quantità_piatti_vegetariano[chiave] !=0: #se tutti sono nulli, il ristorante chiude
+                    flag_vegetariano = True #se almeno uno è diverso da zero, il ristorante rimane aperto
+            if flag_vegetariano == False:
+                ristorante_vegetariano.chiusura_ristorante() #chiudo il ristorante e torno indietro
+                ristorante_vegetariano.stato_apertura()
+                totale_ristoranti[1] += totale
+                totale = 0
+                break
+            ristorante_vegetariano.descrizione_ristorante()
+            ristorante_vegetariano.stato_apertura()
+            print("Ecco a voi il menù con i piatti ed i prezzi")
+            ristorante_vegetariano.stampa_menù()
+            print("\nVi elenchiamo ora le quantità rimaste per ogni piatto")
+            print(quantità_piatti_vegetariano)
+            scelgo = input("Inserire il nome del piatto desiderato. Se non si vuole ordinare niente, scrivere 'indietro'\n") #scelgo il nome del piatto
+            if scelgo.lower() == 'indietro': #torno alla selezione dei ristoranti
+                break
+            else:
+                quantità = int(input("Quanti ne vuoi? ")) #seleziono la quantità
+                if quantità <= int(quantità_piatti_vegetariano[scelgo]): #se la quantità è minore della quantità presente
+                    prezzo_piatto = menù_vegetariano.get(scelgo)
+                    totale += prezzo_piatto
+                    quantità_piatti_vegetariano[scelgo] -= quantità #sottraggo la quantità
+                else:
+                    print("Non ci sono abbastanza porzioni. Provare con un nuovo ordine\n") #se le porzioni sono finite o ce ne sono di meno dell'ordine, dà errore
+                    continue
+                altro = input("Vuoi ordinare altro?\n")
+                if altro.lower() == "no":
+                    print("Grazie del tuo ordine. Hai speso", totale, "euro. Ti riporteremo alla scelta dei ristoranti")
+                    totale_ristoranti[1] += totale
+                    totale = 0
+                    break
+                else:
+                    continue
+        
+        elif seleziono_ristorante.lower() == 'italiano':
+            flag_italiano = False
+            for chiave,valore in quantità_piatti_italiano.items():
+                if quantità_piatti_italiano[chiave] !=0: #se tutti sono nulli, il ristorante chiude
+                    flag_italiano = True #se almeno uno è diverso da zero, il ristorante rimane aperto
+            if flag_italiano == False:
+                ristorante_italiano.chiusura_ristorante() #chiudo il ristorante e torno indietro
+                ristorante_italiano.stato_apertura()
+                totale_ristoranti[2] += totale
+                totale = 0
+                break
+            ristorante_italiano.descrizione_ristorante()
+            ristorante_italiano.stato_apertura()
+            print("Ecco a voi il menù con i piatti ed i prezzi")
+            ristorante_italiano.stampa_menù()
+            print("\nVi elenchiamo ora le quantità rimaste per ogni piatto")
+            print(quantità_piatti_italiano)
+            scelgo = input("Inserire il nome del piatto desiderato. Se non si vuole ordinare niente, scrivere 'indietro'\n") #scelgo il nome del piatto
+            if scelgo.lower() == 'indietro': #torno alla selezione dei ristoranti
+                break
+            else:
+                quantità = int(input("Quanti ne vuoi? ")) #seleziono la quantità
+                if quantità <= int(quantità_piatti_italiano[scelgo]): #se la quantità è minore della quantità presente
+                    prezzo_piatto = menù_italiano.get(scelgo)
+                    totale += prezzo_piatto
+                    quantità_piatti_italiano[scelgo] -= quantità #sottraggo la quantità
+                else:
+                    print("Non ci sono abbastanza porzioni. Provare con un nuovo ordine\n") #se le porzioni sono finite o ce ne sono di meno dell'ordine, dà errore
+                    continue
+                altro = input("Vuoi ordinare altro?\n")
+                if altro.lower() == "no":
+                    print("Grazie del tuo ordine. Hai speso", totale, "euro. Ti riporteremo alla scelta dei ristoranti")
+                    totale_ristoranti[2] += totale
+                    totale = 0
+                    break
+                else:
+                    continue
 
+
+print("Abbiamo guadagnato dal ristorante americano", totale_ristoranti[0], "euro,\ndal ristorante vegetariano", totale_ristoranti[1], "euro\n"
+      "dal ristorante italiano", totale_ristoranti[2], "euro.\nIn totale, abbiamo guadagnato", totale_ristoranti[0]+totale_ristoranti[1]+totale_ristoranti[2], "euro")
