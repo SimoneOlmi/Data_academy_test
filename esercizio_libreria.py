@@ -53,3 +53,40 @@ class Libro (Libreria):
         print(f"Il libro {self.titolo}, scritto da {self.autore}, ha codice identificativo: {self.isbn}")
 
 
+
+isbn = 0
+while True:
+    print("Inseriamo dei libri nel nostro catalogo, prima di aprire la libreria agli utenti\n")
+    titolo = input("Inserisci il titolo del libro: ")
+    autore = input("Inserisci l'autore del libro: ")
+    isbn +=1
+
+    book = Libro(titolo, autore, isbn)
+
+    book.aggiungi_libro(book)
+
+    esco = input("Vuoi aggiungere un altro libro? ")
+    if esco.lower() == 'no':
+        break
+
+while True:
+    scelgo = input("Benvenuto nella nostra libreria!\nPuoi visualizzare il nostro catalogo col comando 'catalogo'\nPuoi cercare un libro nella nostra libreria col comando 'cerca'\n"
+                   "Puoi uscire dal nostro sito col comando 'esci'\n")
+    if scelgo.lower() == 'esci':
+        print("Grazie per essere stato con noi. Alla prossima!")
+        break
+    elif scelgo.lower() == 'catalogo':
+        book.mostra_catalogo()
+    elif scelgo.lower() == 'cerca':
+        cerco = input("Inserisci il titolo che stai ricercando: ")
+        print(book.cerca_per_titolo(cerco))
+    else:
+        print("Comando non valido. Ritornerai alla pagina di inizio")
+        continue
+
+
+
+
+
+
+
