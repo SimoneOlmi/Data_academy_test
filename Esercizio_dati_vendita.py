@@ -26,7 +26,7 @@ class Vendite:
                 totale += self.importo_per_giorno[i]
             return totale/len(self.importo_per_giorno)
         except ZeroDivisionError:
-            print("Non ci sono elementi nella lista, impossibile fare la media")
+            return 0
  
     #Trova il giorno ed il valore in cui le vendite sono state massime
     def vendite_massimo(self):
